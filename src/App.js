@@ -1,25 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
 
-function App() {
+import React, { useState } from "react";
+
+import Navbar from "./components/Navbar";
+import Amazon from "./components/Amazon";
+import Carts from "./components/Carts";
+
+const App = () => {
+  const [cart, setCart] = useState([]);
+  const [show, setShow] = useState(true);
+
+  const handleClick = (item) => {
+    let isPresent = false;
+    cart.forEach((product) => {
+      if (item.id === product.id) isPresent = true;
+    });
+    if (isPresent) return;
+    setCart([...cart, item]);
+  };
+  const handleChange = (item, d) => {
+    let ind = -1;
+    cart.forEach((data, index) => {
+      if (data.id === item.id) ind = index;
+    });
+    const tempArr = cart;
+    tempArr[ind] += d;
+    if (tempArr[ind].amount === 0) tempArr[ind].amount = 1;
+    setCart([...tempArr]);
+  };
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <div className="blog">
+        <Navbar size={cart.length} setShow={setShow} />
+      </div>
+      {show ? (
+        <Amazon handleClick={handleClick} />
+      ) : (
+        <Carts cart={cart} setCart={setCart} handleChange={handleChange} />
+      )}
     </div>
   );
-}
+};
 
 export default App;
